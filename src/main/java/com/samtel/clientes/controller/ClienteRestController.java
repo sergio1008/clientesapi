@@ -58,4 +58,16 @@ public class ClienteRestController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
+	
+	/*
+	 * 
+	 * 
+	 * @GetMapping("{id}")    http://localhost:9090/clientes/12
+	 *   metodo(@PathVariable(name ="id") Long id);
+	 *   
+	 * @GetMapping("")    http://localhost:9090/clientes?id=12
+	 *    metodo(@RequestParam(name ="id") Long id);
+	 */
 }
