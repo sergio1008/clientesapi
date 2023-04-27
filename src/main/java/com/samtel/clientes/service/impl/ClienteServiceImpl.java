@@ -1,6 +1,7 @@
 package com.samtel.clientes.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,15 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public ClienteDTO getClienteById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		ClienteEntity entity = repository.findById(id).orElseThrow();
+
+		ClienteDTO dto = new ClienteDTO();
+		dto.setId(entity.getId());
+		dto.setNombreCliente(entity.getNombre());
+		dto.setCorreoElectronico(entity.getCorreo());
+		dto.setDocumento(entity.getDni());
+
+		return dto;
 	}
 
 	@Override
@@ -53,14 +61,23 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public ClienteDTO actualizarCliente(Long id, ClienteDTO cliente) {
-		// TODO Auto-generated method stub
-		return null;
+		ClienteEntity clienteEntity = repository.findById(id).orElseThrow();
+
+		clienteEntity.setNombre(cliente.getNombreCliente());
+		clienteEntity.setDni(cliente.getDocumento());
+		clienteEntity.setCorreo(cliente.getCorreoElectronico());
+
+		repository.save(clienteEntity);
+		return cliente;
 	}
 
 	@Override
 	public void borrarCliente(Long id) {
-		// TODO Auto-generated method stub
-		
+		if(repository.existsById(id)){
+			repository.deleteById(id);
+		} else {
+			throw  new NoSuchElementException("Id no encontrado");
+		}
 	}
 
 }

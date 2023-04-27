@@ -1,16 +1,13 @@
 package com.samtel.clientes.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.samtel.clientes.dto.ClienteDTO;
 import com.samtel.clientes.service.ClienteService;
@@ -33,7 +30,6 @@ public class ClienteRestController {
 	
 	@GetMapping
 	public ResponseEntity<List<ClienteDTO>> getAll() {
-		
 		try {
 			List<ClienteDTO> reponseData = service.getAll();
 			
@@ -45,8 +41,6 @@ public class ClienteRestController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		
 	}
 	
 	@PostMapping
@@ -58,8 +52,46 @@ public class ClienteRestController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
+
+
+
+	@GetMapping("{id}")
+	public ResponseEntity<ClienteDTO> getClienteById(@PathVariable Long id){
+		try {
+			ClienteDTO response = service.getClienteById(id);
+			return  ResponseEntity.ok(response);
+		}catch (NoSuchElementException e){
+			return ResponseEntity.notFound().build();
+		} catch (Exception e){
+			return  ResponseEntity.internalServerError().build();
+		}
+
+	}
+
+	@PutMapping("{id}")
+	public ResponseEntity<ClienteDTO>  updateCliente(@PathVariable Long id, @RequestBody @Valid ClienteDTO cliente){
+		try {
+			ClienteDTO response = service.actualizarCliente(id, cliente);
+			return ResponseEntity.ok(response);
+		}catch (NoSuchElementException e){
+			return ResponseEntity.notFound().build();
+		} catch (Exception e){
+			return  ResponseEntity.internalServerError().build();
+		}
+	}
+
+
+	@DeleteMapping("{idCliente}")
+	public ResponseEntity<Void> deleteCliente(@PathVariable(name = "idCliente") Long id){
+		try {
+			service.borrarCliente(id);
+			return ResponseEntity.noContent().build();
+		}catch (NoSuchElementException e){
+			return ResponseEntity.notFound().build();
+		} catch (Exception e){
+			return  ResponseEntity.internalServerError().build();
+		}
+	}
 	
 	/*
 	 * 
